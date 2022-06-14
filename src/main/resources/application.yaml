@@ -1,0 +1,7 @@
+smartym:
+  oauth:
+    sandbox: http://test.devenv.smartym.by
+    client_id: HKGzRFKpSVjSpTPQ
+    redirect_uri: http%3A%2F%2Flocalhost%3A8080%2Fsubmit
+    response_type: code
+    scope: aisp
