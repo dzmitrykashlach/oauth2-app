@@ -1,7 +1,27 @@
-smartym:
-  oauth:
-    sandbox: http://test.devenv.smartym.by
-    client_id: HKGzRFKpSVjSpTPQ
-    redirect_uri: http%3A%2F%2Flocalhost%3A8080%2Fsubmit
-    response_type: code
-    scope: aisp
+spring:
+  thymeleaf:
+    cache: false
+  security:
+    http:
+      csrf():
+        disable();:
+    oauth2:
+      client:
+        registration:
+          smartym:
+            client-id: HKGzRFKpSVjSpTPQ
+            client-secret: ovnLjsKEEciCxjwmeHZSB
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: authorization_code
+            response_type: code
+            redirect-uri: http://localhost:8080/initPayment
+            scope: pisp
+            client-name: dzkashlach
+        provider:
+          smartym:
+            authorization-uri: http://test.devenv.smartym.by/signin
+            token-uri: http://test.devenv.smartym.by/token
+logging:
+  level:
+    org:
+      springframework.security: TRACE

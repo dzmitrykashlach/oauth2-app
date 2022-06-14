@@ -12,8 +12,13 @@
 <div class="container">
     <h1>Payment Service</h1>
     <hr>
-    <h2>Payment is submitted</h2>
+    <h2>Make a payment</h2>
+
+    <form action="#" th:action="@{/initPayment}" th:object="${payment}" method="GET">
+        <button type="submit" class="btn btn-info col-2">Init payment</button>
+    </form>
+
     <hr>
 </div>
 </body>
-</html>
+</html>4
