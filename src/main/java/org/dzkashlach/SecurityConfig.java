@@ -18,7 +18,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     {
         webSecurity
                 .ignoring()
-                .antMatchers(HttpMethod.GET,"/index");
+                .antMatchers(HttpMethod.GET,"/index","/done")
+                .antMatchers(HttpMethod.POST,"/submit");
     }
 
     @Override
