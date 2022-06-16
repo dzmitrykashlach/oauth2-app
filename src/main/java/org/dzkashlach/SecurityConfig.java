@@ -6,7 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -18,8 +17,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     {
         webSecurity
                 .ignoring()
-                .antMatchers(HttpMethod.GET,"/index","/done")
-                .antMatchers(HttpMethod.POST,"/submit");
+                .antMatchers(HttpMethod.GET,"/index","/done");
+//                .antMatchers(HttpMethod.POST,"/payment-requests");
     }
 
     @Override

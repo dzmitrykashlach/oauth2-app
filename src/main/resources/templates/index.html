@@ -14,7 +14,7 @@
     <hr>
     <h2>Make a payment</h2>
 
-    <form action="#" th:action="@{/submit}" th:object="${payment}" method="POST">
+    <form action="#" th:action="@{/payment-requests}" th:object="${payment}" method="POST">
         <input type="text" th:field="*{name}" placeholder="Creditor Name" class="form-control mb-4 col-4">
         <input type="text" th:field="*{iban}" placeholder="Creditor IBAN" class="form-control mb-4 col-4">
         <input type="text" th:field="*{amount}" placeholder="Amount" class="form-control mb-4 col-4">

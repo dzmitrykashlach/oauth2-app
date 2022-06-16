@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
-public class Payment {
+public class PaymentForm {
     private String name;
     private String iban;
     private int amount;

@@ -1,48 +1,50 @@
 package org.dzkashlach.controllers;
 
-import org.dzkashlach.entities.Payment;
-import org.dzkashlach.services.PaymentRequestService;
-import org.dzkashlach.services.PaymentRequestServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import org.dzkashlach.build.PaymentRequestBuilder;
+import org.dzkashlach.entities.PaymentForm;
+import org.dzkashlach.entities.PaymentRequest;
+import org.dzkashlach.services.SmartymPaymentsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Controller
 public class PaymentController {
 
-    @Autowired
-    private PaymentRequestServiceImpl paymentOauthServiceSmartym;
+    @Value("${smartym.baseUrl}")
+    private String SMARTYM_BASE_URL;
 
     @GetMapping("/index")
     public String viewPaymentPage(Model model) {
-        model.addAttribute("payment", new Payment());
+        model.addAttribute("payment", new PaymentForm());
         return "index";
     }
 
-    @GetMapping("/done")
-    public String done(Model model) {
-        return "payment";
-    }
+    @PostMapping("/payment-requests")
+    public String submitPayment(@ModelAttribute("payment") PaymentForm paymentForm) {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
 
-    @PostMapping("/submit")
-    public String submitPayment(@ModelAttribute("payment") Payment payment) {
-        //wait for authorization and send payment request with retrofit
-//        https://square.github.io/retrofit/
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://test.devenv.smartym.by/")
-                .addConverterFactory(GsonConverterFactory.create()).build();
-            PaymentRequestService paymentRequestService = retrofit.create(PaymentRequestService.class);
-        paymentRequestService.execute();
-            return "payment";
-    }
+                .baseUrl(SMARTYM_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
 
-    @GetMapping("/initPayment")
-    public String initPayment(Model model) {
-        return "initpayment";
+        SmartymPaymentsService smartymPaymentsService = retrofit.create(SmartymPaymentsService.class);
+        PaymentRequest paymentRequest = PaymentRequestBuilder.build(paymentForm);
+        Call<Void> call =  smartymPaymentsService.requestPayment(paymentRequest);
+        return "payment";
     }
 }

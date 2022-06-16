@@ -1,3 +1,5 @@
+smartym:
+  baseUrl: http://test.devenv.smartym.by/
 spring:
   thymeleaf:
     cache: false
