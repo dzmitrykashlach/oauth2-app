@@ -1,16 +1,16 @@
 package org.dzkashlach.entities;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
-@Setter
+@AllArgsConstructor
 @Getter
 public class PaymanentTypeInformation {
-    @SerializedName("beneficiary")
+    @SerializedName("categoryPurpose")
     private String categoryPurpose;
-    @SerializedName("beneficiary")
+    @SerializedName("localInstrument")
     private String localInstrument;
-    @SerializedName("beneficiary")
+    @SerializedName("serviceLevel")
     private String serviceLevel;
 }

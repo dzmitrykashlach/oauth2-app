@@ -1,13 +1,12 @@
 package org.dzkashlach.entities;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 
 @Getter
-@Setter
+@AllArgsConstructor
 public class PaymentRequest {
     @SerializedName("beneficiary")
     private Beneficiary beneficiary;
@@ -22,11 +21,4 @@ public class PaymentRequest {
     @SerializedName("paymentTypeInformation")
     private PaymanentTypeInformation paymentTypeInformation;
 
-    public PaymentRequest(PaymanentTypeInformation paymentInformationId) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        this.creationDateTime = dtf.format(now);
-        numberOfTransactions = 0;
-        this.paymentTypeInformation = paymentInformationId;
-    }
 }

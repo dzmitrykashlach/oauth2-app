@@ -1,5 +1,6 @@
 package org.dzkashlach.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.dzkashlach.build.PaymentRequestBuilder;
@@ -13,10 +14,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.io.IOException;
+
 @Controller
+@Slf4j
 public class PaymentController {
 
     @Value("${smartym.baseUrl}")
@@ -29,9 +34,9 @@ public class PaymentController {
     }
 
     @PostMapping("/payment-requests")
-    public String submitPayment(@ModelAttribute("payment") PaymentForm paymentForm) {
+    public String paymentRequests(@ModelAttribute("payment") PaymentForm paymentForm) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(logging)
                 .build();
@@ -44,7 +49,12 @@ public class PaymentController {
 
         SmartymPaymentsService smartymPaymentsService = retrofit.create(SmartymPaymentsService.class);
         PaymentRequest paymentRequest = PaymentRequestBuilder.build(paymentForm);
-        Call<Void> call =  smartymPaymentsService.requestPayment(paymentRequest);
+        Call<Void> call = smartymPaymentsService.requestPayment(paymentRequest);
+        try {
+            call.execute();
+        } catch (IOException e) {
+            log.error("Failed to make payment request", e);
+        }
         return "payment";
     }
 }

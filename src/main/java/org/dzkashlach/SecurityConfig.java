@@ -18,6 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         webSecurity
                 .ignoring()
                 .antMatchers(HttpMethod.GET,"/index","/done");
+//                .antMatchers(HttpMethod.GET,"/index","/done")
 //                .antMatchers(HttpMethod.POST,"/payment-requests");
     }
 
@@ -25,7 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().authenticated()
+                        .antMatchers(HttpMethod.POST,"/payment-requests").authenticated()
+//                        .anyRequest().permitAll()
                 )
                 .oauth2Login(withDefaults());
         http.csrf().disable();
