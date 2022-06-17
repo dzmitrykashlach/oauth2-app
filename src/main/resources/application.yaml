@@ -16,7 +16,7 @@ spring:
             client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
             response_type: code
-            redirect-uri: http://localhost:8080/initPayment
+            redirect-uri: http://localhost:8080/token
             scope: pisp
             client-name: dzkashlach
         provider:

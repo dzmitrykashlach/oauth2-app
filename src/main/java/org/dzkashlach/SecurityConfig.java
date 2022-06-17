@@ -17,16 +17,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     {
         webSecurity
                 .ignoring()
-                .antMatchers(HttpMethod.GET,"/index","/done");
-//                .antMatchers(HttpMethod.GET,"/index","/done")
-//                .antMatchers(HttpMethod.POST,"/payment-requests");
+//                .antMatchers(HttpMethod.GET,"/index","/done");
+                .antMatchers(HttpMethod.GET,"/index","/done","/token")
+                .antMatchers(HttpMethod.POST,"/payment-requests");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.POST,"/payment-requests").authenticated()
+//                        .antMatchers(HttpMethod.POST,"/payment-requests").authenticated()
+                        .antMatchers(HttpMethod.GET,"/signin").authenticated()
 //                        .anyRequest().permitAll()
                 )
                 .oauth2Login(withDefaults());
