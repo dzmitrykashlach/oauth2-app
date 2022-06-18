@@ -22,6 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 
 @Controller
 @Slf4j
@@ -36,6 +37,7 @@ public class PaymentController {
 
     private Retrofit retrofit;
     private PaymentForm paymentForm;
+    private Semaphore semaphore;
 
     @GetMapping("/index")
     public String viewPaymentPage(Model model) {
@@ -44,7 +46,7 @@ public class PaymentController {
     }
 
     @PostConstruct
-    public void initRetrofit() {
+    public void init() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
@@ -55,13 +57,20 @@ public class PaymentController {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
+        this.semaphore = new Semaphore(1);
     }
 
     @PostMapping("/payment-requests")
     public String paymentRequests(@ModelAttribute("payment") PaymentForm paymentForm) {
-        this.paymentForm=paymentForm;
+        try {
+            this.semaphore.acquire();
+        } catch (InterruptedException e) {
+            log.error("Failed to save payment form data", e);
+        }
+        this.paymentForm = paymentForm;
         return "redirect:/signin";
     }
+
     @GetMapping("/signin")
     public void token() {
     }
@@ -86,7 +95,8 @@ public class PaymentController {
         }
         log.info("Received accessToken = " + accessToken);
         PaymentRequest paymentRequest = PaymentRequestBuilder.build(this.paymentForm);
-        Call<okhttp3.ResponseBody> requestPaymentCall = smartymPaymentsService.requestPayment(paymentRequest,"Bearer "+accessToken);
+        this.semaphore.release();
+        Call<okhttp3.ResponseBody> requestPaymentCall = smartymPaymentsService.requestPayment(paymentRequest, "Bearer " + accessToken);
         try {
             requestPaymentCall.execute();
         } catch (IOException e) {

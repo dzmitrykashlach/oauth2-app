@@ -2,7 +2,6 @@ package org.dzkashlach.services;
 
 import okhttp3.ResponseBody;
 import org.dzkashlach.entities.PaymentRequest;
-import org.springframework.web.bind.annotation.RequestParam;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
