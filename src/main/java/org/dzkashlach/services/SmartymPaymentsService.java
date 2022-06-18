@@ -10,8 +10,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface SmartymPaymentsService {
-//    @POST("/payment-requests")
-//    Call<Void> requestPayment(@Body PaymentRequest paymentRequest);
 
     @POST("/payment-requests")
     Call<okhttp3.ResponseBody> requestPayment(@Body PaymentRequest paymentRequest, @Header("Authorization") String authorization);
