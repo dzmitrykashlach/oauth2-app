@@ -12,6 +12,7 @@ import org.dzkashlach.entities.PaymentForm;
 import org.dzkashlach.entities.PaymentRequest;
 import org.dzkashlach.services.SmartymPaymentsService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +23,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.concurrent.Semaphore;
 
 @Controller
 @Slf4j
+@Scope("session")
 public class PaymentController {
 
     @Value("${smartym.baseUrl}")
@@ -37,7 +38,6 @@ public class PaymentController {
 
     private Retrofit retrofit;
     private PaymentForm paymentForm;
-    private Semaphore semaphore;
 
     @GetMapping("/index")
     public String viewPaymentPage(Model model) {
@@ -57,16 +57,10 @@ public class PaymentController {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        this.semaphore = new Semaphore(1);
     }
 
     @PostMapping("/payment-requests")
     public String paymentRequests(@ModelAttribute("payment") PaymentForm paymentForm) {
-        try {
-            this.semaphore.acquire();
-        } catch (InterruptedException e) {
-            log.error("Failed to save payment form data", e);
-        }
         this.paymentForm = paymentForm;
         return "redirect:/signin";
     }
@@ -95,7 +89,6 @@ public class PaymentController {
         }
         log.info("Received accessToken = " + accessToken);
         PaymentRequest paymentRequest = PaymentRequestBuilder.build(this.paymentForm);
-        this.semaphore.release();
         Call<okhttp3.ResponseBody> requestPaymentCall = smartymPaymentsService.requestPayment(paymentRequest, "Bearer " + accessToken);
         try {
             requestPaymentCall.execute();
