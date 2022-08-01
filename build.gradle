@@ -2,8 +2,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'org.springframework.boot' version '2.0.1.RELEASE'
-//    TODO
-//    id 'org.springframework.boot.experimental.thin-launcher' version '1.0.25.RELEASE'
+    id 'org.springframework.boot.experimental.thin-launcher' version '1.0.28.RELEASE'
 }
 
 repositories {
@@ -42,5 +41,3 @@ publishing {
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
-// TODO
-//bootJar.dependsOn = [thinProperties]
